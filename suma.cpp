@@ -1,11 +1,8 @@
-//
-//  main.cpp
-//  LDE
-//
-//  Feliciano Morales Juan Daniel 2/04/20.
-//  Copyright © 2020 Feliciano Morales Juan Daniel. All rights reserved.
-//
+//  SUMA CON LDE
+//  Feliciano Morales Juan Daniel 24/04/20.
+//  Copyright Â© 2020 Feliciano Morales Juan Daniel. All rights reserved.
 #include <iostream>
+#include <conio.h>
 using namespace std;
 class Nodo
 {
@@ -56,38 +53,42 @@ public:
     void InsertarI(int);
     void InsertarF(int);
     void Imprimir();
+    int Contar();
     void Leer();
     LDE operator+(LDE);
     LDE()
     {   Inicio=NULL;
+    	Fin=NULL;
     }
     
 };
 void LDE::InsertarI(int x)
-{   if(!Inicio)	
-	{	Inicio=new Nodo(x);
-	}
-	else
-	{	Nodo *helpx3=new Nodo(x);
-   		helpx3->Asignasig(Inicio);
-   		Inicio->Asignaant(helpx3);
-		Inicio=helpx3;  		
-   	}
+{   if(!Inicio)
+    {   Inicio=new Nodo(x);
+        Fin=Inicio;
+    }
+    else
+    {   Nodo *helpx3=new Nodo(x);
+        helpx3->Asignasig(Inicio);
+        Inicio->Asignaant(helpx3);
+        Inicio=helpx3;
+    }
 }
 void LDE::InsertarF(int x)
-{   if(Inicio==NULL)
-    Inicio=new Nodo(x);
+{   if(!Inicio)
+    {   Inicio=new Nodo(x);
+    	Fin=Inicio;
+	}
     else
-        {   Nodo *help=Inicio;
-            while(help->Obtienesig()!=NULL)			help=help->Obtienesig();
-            Nodo *helpx2=new Nodo(x);
-            help->Asignasig(helpx2);
-            helpx2->Asignaant(help);
-        }
+    {
+        Nodo *helpx2=new Nodo(x);
+        Fin->Asignasig(helpx2);
+        helpx2->Asignaant(Fin);
+        Fin=helpx2;
+    }
 }
 void LDE::Imprimir()
-{   if(!Inicio)
-    cout<<"Lista Vacia"<<endl;
+{   if(!Inicio)   cout<<"";
     else
         {   Nodo *Aux=Inicio;
             while(Aux!=NULL)   
@@ -96,33 +97,55 @@ void LDE::Imprimir()
 			}
         }
 }
+int LDE::Contar()
+{	int ESCA=0;
+   	if(Inicio)
+   	{	Nodo *REC=Inicio;
+   		while(REC!=NULL)
+   		{	ESCA++;
+   			REC=REC->Obtienesig();
+   		}
+   	}
+	return ESCA;
+}
 void LDE::Leer()
-{	int n,aux;
-	cout<<"Ingrese un numero: "; cin>>n;
-	while((n%10)!=0)
-	{	aux=n%10;
-		n=n/10;
-		InsertarI(aux);
+{	int i=0; 
+	while(i!=13) //termina hasta que presione enter
+	{	system("cls");
+		cout<<"Ingresa tu numero: ";	Imprimir(); //para que muestre la cifra que voy ingresando
+		if((i=getch())!=13)	InsertarF(i-48);//el -48 es para convertir de ASCII a decimal 
 	}
 }
 LDE LDE::operator+(LDE B)
 {	LDE Temp;
-	Nodo *Ayuda=B.Inicio,*Ayuda2=Inicio;
-	int aux=0,c=0;
-	while(Ayuda2->Obtienesig()!=NULL)
-	{	Ayuda2=Ayuda2->Obtienesig();
-		Ayuda=Ayuda->Obtienesig();
+	Nodo *may,*men;
+	int aux=0,c;
+	if(Contar()>=B.Contar()) 
+	{	men=B.Fin;	 may=Fin;
 	}
-	while(Ayuda!=NULL)
-	{	c=Ayuda2->Obtienedato()+Ayuda->Obtienedato()+aux;
+	else
+	{	may=B.Fin;	 men=Fin;
+	}
+	while(men!=NULL)
+	{	c=may->Obtienedato()+men->Obtienedato()+aux;
 		if(c>=10)
 		{	aux=1;
 			c=c-10;	
 		}
 		else	aux=0;
 		Temp.InsertarI(c);
-		Ayuda2=Ayuda2->Obtieneant();
-		Ayuda=Ayuda->Obtieneant();
+		men=men->Obtieneant();
+		may=may->Obtieneant();
+	}
+	while(may!=NULL)
+	{	c=may->Obtienedato()+aux;
+		if(c>=10)
+		{	aux=1;
+			c=c-10;	
+		}
+		else	aux=0;
+		Temp.InsertarI(c);
+		may=may->Obtieneant();
 	}
 	if(aux>0) Temp.InsertarI(aux);
 	return Temp;
@@ -131,7 +154,7 @@ int main(int argc, const char * argv[])
 {   LDE A,B,C;
     cout<<"1.-"; A.Leer();
     cout<<"2.-"; B.Leer();
-    system("pause"); system("cls");
+	system("cls");
     C=A+B;
     A.Imprimir(); cout<<endl;
     B.Imprimir(); cout<<endl;
